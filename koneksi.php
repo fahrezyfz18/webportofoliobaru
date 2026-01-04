@@ -2,11 +2,11 @@
 $host = "localhost";
 $user = "root";
 $pass = "";
-$db = "projekpbl";
+$db = "portofoliopbl";
 
-$conn = mysqli_connect($host, $user, $pass, $db);
+$koneksi = mysqli_connect($host, $user, $pass, $db);
 
-if (!$conn) {
+if (!$koneksi) {
     die("Koneksi gagal: " . mysqli_connect_error());
 }
 ?>

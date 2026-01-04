@@ -2,54 +2,48 @@
 session_start();
 include "koneksi.php";
 
+$error = ""; 
+
 if (isset($_POST['login'])) {
-    $nim_nidn = mysqli_real_escape_string($conn, $_POST['nim_nidn']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $nim_nidn = mysqli_real_escape_string($koneksi, $_POST['nim_nidn']);
+    $password = mysqli_real_escape_string($koneksi, $_POST['password']);
 
-    // Cek apakah akun ada
     $sql = "SELECT * FROM users WHERE nim_nidn='$nim_nidn' LIMIT 1";
-    $result = mysqli_query($conn, $sql);
-
-    if (!$result) {
-        die("Query Error: " . mysqli_error($conn));
-    }
+    $result = mysqli_query($koneksi, $sql);
 
     if (mysqli_num_rows($result) === 1) {
         $row = mysqli_fetch_assoc($result);
-
         $db_pass = $row['password'];
 
-        // Menangani 2 kemungkinan password:
-        // 1. sudah di-hash
-        // 2. belum di-hash
-        $password_valid =
-            password_verify($password, $db_pass) ||   
-            $password === $db_pass;                    
+        // Cek password (mendukung hash maupun plain text untuk transisi)
+        $password_valid = password_verify($password, $db_pass) || $password === $db_pass; 
 
         if ($password_valid) {
-            // Set session
-            $_SESSION['role'] = $row['role'];
-            $_SESSION['nama'] = $row['nama'];
-            $_SESSION['id'] = $row['id'];
+            $_SESSION['login']   = true;
+            $_SESSION['user_id'] = $row['id'];
+            $_SESSION['nama']    = $row['nama'];
+            $_SESSION['role']    = $row['role'];
 
-            // Redirect sesuai role
-            if ($row['role'] == 'mahasiswa') {
-                header("Location: dashboard_mahasiswa.php");
-                exit();
+            // LOGIKA PENGALIHAN BERDASARKAN ROLE
+            $redirect_page = "";
+            if ($row['role'] == 'admin') {
+                $redirect_page = 'dashboard_admin.php';
             } elseif ($row['role'] == 'dosen') {
-                header("Location: dashboard_dosen.php");
-                exit();
+                $redirect_page = 'dashboard_dosen.php';
             } else {
-                header("Location: index.php");
-                exit();
+                $redirect_page = 'dashboard_mahasiswa.php';
             }
 
+            echo "<script>
+                    alert('Berhasil Login! Selamat datang, " . $_SESSION['nama'] . "');
+                    window.location.href = '$redirect_page';
+                  </script>";
+            exit();
         } else {
-            $error = "Password salah!";
+            $error = "<script>alert('Password salah'); window.location.href = 'login.php';</script>";
         }
-
     } else {
-        $error = "Akun tidak ditemukan!";
+        $error = "<script>alert('Akun tidak ditemukan'); window.location.href = 'login.php';</script>";
     }
 }
 ?>
@@ -59,6 +53,19 @@ if (isset($_POST['login'])) {
   <meta charset="UTF-8">
   <link rel="stylesheet" href="stylelogreg.css">
   <title>Login</title>
+  <style>
+      /* Tambahan style untuk alert error */
+      .alert-error {
+          background-color: #f8d7da;
+          color: #721c24;
+          padding: 10px;
+          border-radius: 5px;
+          border: 1px solid #f5c6cb;
+          margin-bottom: 15px;
+          font-size: 14px;
+          text-align: center;
+      }
+  </style>
 </head>
 <body>
     <section class="hero" id="home">
@@ -68,7 +75,9 @@ if (isset($_POST['login'])) {
 <div class="container">
   <h2>Login</h2>
 
-  <?php if(!empty($error)) echo "<p style='color:red'>$error</p>"; ?>
+  <?php if(!empty($error)): ?>
+          <?php echo $error; ?>
+  <?php endif; ?>
 
   <form method="POST">
     <input type="text" name="nim_nidn" placeholder="Masukkan NIM / NIDN" required>
@@ -79,6 +88,5 @@ if (isset($_POST['login'])) {
     <p>Belum punya akun? <a href="register.php">Daftar</a></p>
   </form>
 </div>
-
-</body>
+</div> </section> </body>
 </html>

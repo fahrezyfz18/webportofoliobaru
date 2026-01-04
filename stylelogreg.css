@@ -1,0 +1,94 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Background full */
+body {
+  height: 100vh;
+  width: 100%;
+  background: url('Gedung.jpg') center/cover no-repeat fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Overlay gelap */
+body::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 25, 47, 0.7);
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* Card Login – lebih besar */
+.container {
+  position: relative;
+  z-index: 2;
+  width: 420px;                /* Diperbesar */
+  padding: 40px;               /* Padding diperbesar */
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* Judul lebih besar */
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 28px;            /* Bigger */
+  font-weight: bold;
+  color: white;
+}
+
+/* Input lebih besar */
+input, select {
+  width: 100%;
+  padding: 15px;              /* Lebih besar */
+  margin: 12px 0;
+  border-radius: 10px;        /* Lebih modern */
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+/* Tombol lebih besar */
+button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 15px;
+  background: #5fc3ff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.05rem;         /* Bigger text */
+  color: #000;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:hover {
+  background: #7fdcff;
+}
+
+p {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 0.95rem;
+  color: white;
+}
+
+a {
+  color: #5fc3ff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
